@@ -424,13 +424,17 @@ function options_mt:wipe()
     self.model = nil
     self.entity = nil
     self.localEntity = nil
+
+    if self.__global[1]?.name == 'builtin:goback' then
+        table.remove(self.__global, 1)
+    end
 end
 
 ---@param entity? number
 ---@param _type? number
 ---@param model? number
 function options_mt:set(entity, _type, model)
-    if not entity then return options end
+    if not entity then return end
 
     if _type == 1 and IsPedAPlayer(entity) then
         self:wipe()
@@ -453,6 +457,7 @@ function options_mt:set(entity, _type, model)
     if self.localEntity then options_mt.size += 1 end
 end
 
+---@type OxTargetOption[]
 local global = {}
 
 ---@param options OxTargetOption | OxTargetOption[]
@@ -465,6 +470,7 @@ function api.removeGlobalOption(options)
     removeTarget(global, options, GetInvokingResource())
 end
 
+---@class OxTargetOptions
 local options = setmetatable({
     __global = global
 }, options_mt)
@@ -480,6 +486,8 @@ function api.getTargetOptions(entity, _type, model)
             global = players,
         }
     end
+
+    local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
 
     return {
         global = _type == 1 and peds or _type == 2 and vehicles or objects,
