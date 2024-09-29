@@ -18,7 +18,8 @@ function utils.raycastFromCamera(flag)
 
     while true do
         Wait(0)
-        local retval, hit, endCoords, surfaceNormal, materialHash, entityHit = GetShapeTestResultIncludingMaterial(handle)
+        local retval, hit, endCoords, surfaceNormal, materialHash, entityHit = GetShapeTestResultIncludingMaterial(
+        handle)
 
         if retval ~= 1 then
             ---@diagnostic disable-next-line: return-type-mismatch
@@ -197,6 +198,8 @@ SetTimeout(0, function()
         require 'client.framework.esx'
     elseif utils.hasExport('qbx_core.HasGroup') then
         require 'client.framework.qbx'
+    elseif utils.hasExport('qb-core.GetCoreObject') then
+        require 'client.framework.qb'
     elseif utils.hasExport('ND_Core.getPlayer') then
         require 'client.framework.nd'
     end
