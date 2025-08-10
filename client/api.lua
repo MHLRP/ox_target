@@ -338,7 +338,16 @@ function api.addLocalEntity(arr, options)
 
             addTarget(localEntities[entityId], options, resource)
         else
-            print(("No entity with id '%s' exists."):format(entityId))
+            -- Enhanced debugging to trace the source of invalid entity IDs
+            local callingResource = GetInvokingResource()
+            local stackTrace = debug.traceback()
+            print("=== OX_TARGET DEBUG: Invalid Entity ID ===")
+            print(("Entity ID: %s"):format(entityId))
+            print(("Calling Resource: %s"):format(callingResource or "Unknown"))
+            print(("Options: %s"):format(json.encode(options or {})))
+            print("Stack Trace:")
+            print(stackTrace)
+            print("=== END DEBUG ===")
         end
     end
 end
@@ -360,6 +369,17 @@ function api.removeLocalEntity(arr, options)
             if not options or #localEntities[entity] == 0 then
                 localEntities[entity] = nil
             end
+        else
+            -- Debug for attempts to remove non-existent local entities
+            local callingResource = GetInvokingResource()
+            local stackTrace = debug.traceback()
+            print("=== OX_TARGET DEBUG: Attempting to remove non-existent local entity ===")
+            print(("Entity ID: %s"):format(entity))
+            print(("Calling Resource: %s"):format(callingResource or "Unknown"))
+            print(("Options: %s"):format(json.encode(options or {})))
+            print("Stack Trace:")
+            print(stackTrace)
+            print("=== END DEBUG ===")
         end
     end
 end
