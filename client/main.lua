@@ -331,7 +331,7 @@ local function startTargeting()
             flag = flag == 511 and 26 or 511
         end
 
-        Wait(hit and 50 or 100)
+        Wait(hit and 75 or 150) -- Increased from 50/100 to 75/150 for better performance
     end
 
     if lastEntity and debug then
