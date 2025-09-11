@@ -171,15 +171,24 @@ local function startTargeting()
         SetStreamedTextureDictAsNoLongerNeeded(dict)
     end)
 
+    local lastPlayerCoords = vec3(0, 0, 0)
+    local coordsUpdateTimer = 0
+
     while state.isActive() do
         if not state.isNuiFocused() and lib.progressActive() then
             state.setActive(false)
             break
         end
 
-        local playerCoords = GetEntityCoords(cache.ped)
+        -- Only update player coords every 75ms to reduce GetEntityCoords calls while maintaining responsiveness
+        coordsUpdateTimer = coordsUpdateTimer + (hit and 75 or 150)
+        if coordsUpdateTimer >= 75 then
+            lastPlayerCoords = GetEntityCoords(cache.ped)
+            coordsUpdateTimer = 0
+        end
+
         hit, entityHit, endCoords = lib.raycast.fromCamera(flag, 4, 20)
-        distance = #(playerCoords - endCoords)
+        distance = #(lastPlayerCoords - endCoords)
 
         if entityHit ~= 0 and entityHit ~= lastEntity then
             local success, result = pcall(GetEntityType, entityHit)
@@ -189,7 +198,7 @@ local function startTargeting()
         if entityType == 0 then
             local _flag = flag == 511 and 26 or 511
             local _hit, _entityHit, _endCoords = lib.raycast.fromCamera(_flag, 4, 20)
-            local _distance = #(playerCoords - _endCoords)
+            local _distance = #(lastPlayerCoords - _endCoords)
 
             if _distance < distance then
                 flag, hit, entityHit, endCoords, distance = _flag, _hit, _entityHit, _endCoords, _distance
@@ -331,7 +340,7 @@ local function startTargeting()
             flag = flag == 511 and 26 or 511
         end
 
-        Wait(hit and 75 or 150) -- Increased from 50/100 to 75/150 for better performance
+        Wait(hit and 75 or 150) -- Optimized for better performance
     end
 
     if lastEntity and debug then
