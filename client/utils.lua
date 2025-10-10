@@ -54,10 +54,12 @@ function utils.getNearbyZones(coords)
     if not Zones then return currentZones, false end
 
     local n = 0
+    local nearbyZones = lib.zones.getNearbyZones()
     drawN = 0
     previousZones, currentZones = currentZones, table.wipe(previousZones)
 
-    for _, zone in pairs(Zones) do
+    for i = 1, #nearbyZones do
+        local zone = nearbyZones[i]
         local contains = zone:contains(coords)
 
         if contains then
