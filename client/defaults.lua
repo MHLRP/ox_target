@@ -126,18 +126,5 @@ api.addGlobalVehicle({
         onSelect = function(data)
             onSelectDoor(data, 4)
         end
-    },
-    {
-        name = 'ox_target:trunk',
-        icon = 'fa-solid fa-car-rear',
-        label = locale('toggle_trunk'),
-        offset = vec3(0.5, 0, 0.5),
-        distance = 2,
-        canInteract = function(entity, distance, coords, name)
-            return canInteractWithDoor(entity, coords, 5, true)
-        end,
-        onSelect = function(data)
-            onSelectDoor(data, 5)
-        end
     }
 })
